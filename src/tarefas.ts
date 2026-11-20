@@ -7,3 +7,5 @@ export interface Tarefa {
 export type NovaTarefa = Pick<Tarefa, 'titulo'>;
 
 export type AtualizarTarefa = Partial<Omit<Tarefa, 'id'>>;
+
+export type SubstituirTarefa = Omit<Tarefa, 'id'>;
