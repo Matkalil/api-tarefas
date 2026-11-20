@@ -1,6 +1,6 @@
 import express from 'express';
 import type { Request, Response } from 'express';
-import type { Tarefa, NovaTarefa, AtualizarTarefa } from './tarefas.js';
+import type { Tarefa, NovaTarefa, AtualizarTarefa, SubstituirTarefa } from './tarefas.js';
 
 let tarefas: Tarefa[] = [
     { id: 1, titulo: 'Estudar Express', concluida: false },
@@ -12,6 +12,7 @@ type ReqId = Request<{ id: string }>;
 type ReqFiltro = Request<{}, {}, {}, { concluida?: string }>;
 type ReqCriar = Request<{}, {}, NovaTarefa>;
 type ReqAtualizar = Request<{ id: string }, {}, AtualizarTarefa>;
+type ReqSubstituir = Request<{ id: string }, {}, SubstituirTarefa>;
 
 const app = express();
 const PORT = 3000;
@@ -66,6 +67,25 @@ app.delete('/tarefas/:id', (req: ReqId, res: Response) => {
     tarefas = tarefas.filter((t) => t.id !== id);
     res.sendStatus(204);
 });
+
+//PUT/tarefas/:id
+app.put('/tarefas/:id', (req: ReqAtualizar, res: Response) => {
+    const id = Number(req.params.id);
+    const { titulo, concluida } = req.body ?? {};
+    if ( typeof titulo !== 'string' || typeof concluida !== 'boolean') {
+        return res
+        .status(400)
+        .json({ erro: 'título (string) e concluida (boolean) são obrigatórios'});
+    }
+    
+    const i= tarefas.findIndex((t) => t.id === id);
+    if (i === -1) return res.status(404).json(NAO_ENC);
+    
+    const tarefaSubstituida: Tarefa = {id, titulo, concluida };
+    tarefas[i] = tarefaSubstituida;
+    res.status(200).json(tarefaSubstituida);
+    }
+);
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
