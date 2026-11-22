@@ -1,6 +1,7 @@
 import express from 'express';
 import type { Request, Response } from 'express';
 import type { Tarefa, NovaTarefa, AtualizarTarefa, SubstituirTarefa } from './tarefas.js';
+import { logger } from './middlewares/logger.js';
 
 let tarefas: Tarefa[] = [
     { id: 1, titulo: 'Estudar Express', concluida: false },
@@ -17,7 +18,9 @@ type ReqSubstituir = Request<{ id: string }, {}, SubstituirTarefa>;
 const app = express();
 const PORT = 3000;
 
+//Middlewares
 app.use(express.json());
+app.use(logger);
 
 //GET /tarefas?concluidas=true
 app.get('/tarefas', (req: ReqFiltro, res: Response<Tarefa[]>) => {
