@@ -2,6 +2,7 @@ import express from 'express';
 import type { Request, Response } from 'express';
 import type { Tarefa, NovaTarefa, AtualizarTarefa, SubstituirTarefa } from './tarefas.js';
 import { logger } from './middlewares/logger.js';
+import { validarTarefa } from './middlewares/validarTarefa.js';
 
 let tarefas: Tarefa[] = [
     { id: 1, titulo: 'Estudar Express', concluida: false },
@@ -39,7 +40,7 @@ app.get('/tarefas/:id', (req: ReqId, res: Response) => {
 });
 
 //POST /tarefas
-app.post('/tarefas', (req: ReqCriar, res: Response) => {
+app.post('/tarefas', validarTarefa, (req: ReqCriar, res: Response) => {
     const { titulo } = req.body ?? {};
     if (!titulo) {
         return res.status(400).json({ erro: 'titulo é obrigatório' });
@@ -72,7 +73,7 @@ app.delete('/tarefas/:id', (req: ReqId, res: Response) => {
 });
 
 //PUT/tarefas/:id
-app.put('/tarefas/:id', (req: ReqAtualizar, res: Response) => {
+app.put('/tarefas/:id', validarTarefa, (req: ReqAtualizar, res: Response) => {
     const id = Number(req.params.id);
     const { titulo, concluida } = req.body ?? {};
     if ( typeof titulo !== 'string' || typeof concluida !== 'boolean') {
