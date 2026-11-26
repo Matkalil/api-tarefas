@@ -20,17 +20,16 @@ export function listar(req: ReqFiltro, res: Response<RespostaPaginada<Tarefa>>) 
     const limite = Number(req.query.limite ?? 10)
     const inicio = (pagina - 1) * limite
 
-    if (concluida === undefined || busca === undefined) {
+    if (concluida === undefined && busca === undefined) {
         return res.json({
             dados: tarefas.slice(inicio, inicio + limite),
             meta: { pagina, limite, total: tarefas.length}
         })
     }
 
-    if (!busca){
+    if (busca){
         const tarefasFiltroBusca = tarefas.filter((t) => t.titulo.includes(busca))
-
-        res.json({
+        return res.json({
             dados: tarefasFiltroBusca.slice(inicio, inicio + limite),
             meta: { pagina, limite, total: tarefasFiltroBusca.length}
         })
