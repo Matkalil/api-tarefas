@@ -2,6 +2,7 @@ import express from 'express'
 import tarefasV1 from './routes/v1/tarefas.routes.js'
 import tarefasV2 from './routes/v2/tarefas.routes.js'
 import { logger } from './middlewares/logger.js';
+import { naoEncontrado, tratarErros } from './middlewares/erros.js';
 
 const app = express()
 
@@ -18,6 +19,8 @@ app.use('/api/v1', (req, res, next) => {
 
 app.use('/api/v1/tarefas', tarefasV1)
 app.use('/api/v2/tarefas', tarefasV2)
+app.use(naoEncontrado)
+app.use(tratarErros)
 
 
 export default app
